@@ -71,29 +71,55 @@ def start_print(request):
         return redirect('/login')
 
     # Initialize PrinterAPI and get printers
-    api_url = "https://default-blackbird-aleksandrs-organization-c5c42-0.blackbird-relay.a8r.io/auth0-google-api/user/profile"
     auth_token = settings.AUTH_TOKEN
-    printer_api = PrinterAPI(api_url, auth_token)
+    api_url = "https://default-blackbird-aleksandrs-organization-c5c42-0.blackbird-relay.a8r.io/auth0-google-api/user/profile"
+
+    printer_api = PrinterAPI(api_url, auth_token)  # Assuming PrinterAPI is for getting printer list
+
     response = printer_api.get_printers()
 
-    # Prepare printer data and log for debugging
+    # Prepare printer data
     user_printers = response["data"] if response["success"] else []
-    print("User Printers:", user_printers)  # Debugging: Check if printers are fetched
 
     if request.method == "POST":
-        # Handle file upload and printer selection logic here
+        api_url = "https://default-blackbird-aleksandrs-organization-c5c42-0.blackbird-relay.a8r.io/epson-connect-printing-api"
+        epson_api = PrinterAPI(api_url, auth_token)  # Epson API for uploading files
+        # Get uploaded file and selected printer
         document = request.FILES.get("document")
         selected_printer_id = request.POST.get("printer")
 
-        # Process the document printing logic (e.g., save file, send to print API)
+        # Generate a unique job ID (or retrieve it from somewhere if needed)
+        job_id = "111222333"  # For demonstration, this should ideally be unique for each job
 
-        # Show success message on successful print initiation
-        return render(request, 'dashboard/start_print.html', {
-            'user_printers': user_printers,
-            'success_message': "Print job started successfully."
-        })
+        # Ensure all required data is available
+        if document and selected_printer_id:
+            # Save the uploaded file to a temporary location if necessary, or pass directly
+            file_path = document.temporary_file_path() if hasattr(document, 'temporary_file_path') else document
 
-    # Render the start print page with printers
+            # Call the upload method to send the file to Epson Connect API
+            upload_response = epson_api.upload_print_job_file(selected_printer_id, job_id, file_path)
+
+            # Check if upload was successful and pass message to template
+            if upload_response and "job_status" in upload_response and upload_response["job_status"] == "CREATED":
+                success_message = f"Print job created successfully. Job ID: {upload_response['job_id']}"
+                return render(request, 'dashboard/start_print.html', {
+                    'user_printers': user_printers,
+                    'success_message': success_message
+                })
+            else:
+                error_message = upload_response.get("message", "Failed to create print job.")
+                return render(request, 'dashboard/start_print.html', {
+                    'user_printers': user_printers,
+                    'error_message': error_message
+                })
+        else:
+            error_message = "Please select a printer and upload a document."
+            return render(request, 'dashboard/start_print.html', {
+                'user_printers': user_printers,
+                'error_message': error_message
+            })
+
+    # Render the start print page with printers for GET requests
     return render(request, 'dashboard/start_print.html', {
         'user_printers': user_printers
     })

@@ -37,30 +37,25 @@ class PrinterAPI:
         else:
             return {"success": False, "message": f"Failed to retrieve printers. Status Code: {response.status_code}"}
 
-    def upload_print_job_file(self, printer_id, job_id, file_path):
+    def upload_print_job_file(self, printer_id, job_id, document):
         """
         Uploads a file to a specific printer job on Epson Connect.
 
         :param printer_id: The ID of the printer
         :param job_id: The ID of the print job
-        :param file_path: Path to the file to be uploaded
+        :param document: The InMemoryUploadedFile to be uploaded
         :return: JSON response containing job ID, upload URI, and job status, or an error message.
         """
         url = f"{self.api_url}/printing/printers/{printer_id}/jobs/{job_id}/upload"
 
-        # Prepare headers and files
-        headers = self.headers.copy()
-        headers['Content-Type'] = 'multipart/form-data'
+        # Prepare files data with the uploaded document directly
+        files = {'file': (document.name, document, 'multipart/form-data')}
 
-        # Open the file in binary mode
-        with open(file_path, 'rb') as file:
-            files = {'file': file}
+        # Make the POST request
+        response = requests.post(url, headers=self.headers, files=files)
 
-            # Make the POST request
-            response = requests.post(url, headers=headers, files=files)
-
-            # Check response status
-            if response.status_code == 200:
-                return response.json()
-            else:
-                return {"error": response.status_code, "message": response.text}
+        # Check response status
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return {"error": response.status_code, "message": response.text}
