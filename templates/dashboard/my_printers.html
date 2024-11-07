@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">My Printers</h2>
+    {% if user_printers %}
+        <div class="row">
+            {% for printer in user_printers %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ printer.name }}</h5>
+                            <p class="card-text">Status: {{ printer.status }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>You don't have any printers added yet.</p>
+    {% endif %}
+</div>
+{% endblock %}
