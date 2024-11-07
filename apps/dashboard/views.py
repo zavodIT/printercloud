@@ -106,3 +106,29 @@ def start_print(request):
             return render(request, 'dashboard/start_print.html', context)
 
     return render(request, 'dashboard/start_print.html', {'user_printers': user_printers})
+
+
+from django.shortcuts import render
+
+def printer_details(request, printer_id):
+    # Mock data for a printer
+    printer = {
+        "printerName": "Office Printer",
+        "printerType": "Laser",
+        "printerLocation": "Room 101",
+        "status": "Online",
+        "printsThisMonth": 120
+    }
+
+    # Mock list of printed documents
+    printed_documents = [
+        {"name": "Report Q1", "date_printed": "2024-11-01", "pages": 10},
+        {"name": "Invoice #12345", "date_printed": "2024-11-03", "pages": 2},
+        {"name": "Project Plan", "date_printed": "2024-11-05", "pages": 15}
+    ]
+
+    context = {
+        'printer': printer,
+        'printed_documents': printed_documents
+    }
+    return render(request, 'dashboard/printer_details.html', context)

@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">Printer Details</h2>
+
+    <!-- Printer Information -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ printer.printerName }}</h5>
+            <p class="card-text"><strong>Type:</strong> {{ printer.printerType }}</p>
+            <p class="card-text"><strong>Location:</strong> {{ printer.printerLocation }}</p>
+            <p class="card-text"><strong>Status:</strong> {{ printer.status }}</p>
+            <p class="card-text"><strong>Total Prints This Month:</strong> {{ printer.printsThisMonth }}</p>
+        </div>
+    </div>
+
+    <!-- Mock List of Printed Documents -->
+    <h4 class="mb-3">Documents Printed on This Printer</h4>
+    {% if printed_documents %}
+        <ul class="list-group mb-4">
+            {% for document in printed_documents %}
+                <li class="list-group-item">
+                    <h6 class="mb-1">{{ document.name }}</h6>
+                    <p class="mb-0"><strong>Date Printed:</strong> {{ document.date_printed }}</p>
+                    <p class="mb-0"><strong>Pages:</strong> {{ document.pages }}</p>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No documents have been printed on this printer yet.</p>
+    {% endif %}
+
+    <!-- Button to go back to printer list -->
+    <div class="mt-4">
+        <a href="{% url 'my_printers' %}" class="btn btn-secondary">Back to My Printers</a>
+    </div>
+</div>
+{% endblock %}

@@ -22,7 +22,12 @@
                 <div class="col-md-4">
                     <div class="card mb-4">
                         <div class="card-body text-center">
-                            <h5 class="card-title">{{ printer.printer.printerName }}</h5>
+                            <!-- Link to Printer Details -->
+                            <h5 class="card-title">
+                                <a href="{% url 'printer_details' printer.printer.printerId %}">
+                                    {{ printer.printer.printerName }}
+                                </a>
+                            </h5>
                             <p class="card-text">Type: {{ printer.printer.printerType }}</p>
                             <p class="card-text">Location: {{ printer.printer.printerLocation }}</p>
                         </div>
