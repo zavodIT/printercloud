@@ -23,7 +23,7 @@ class PrinterAPI:
         }
 
         # Make the POST request to add a printer
-        response = requests.post(self.api_url + "/printer", headers=self.headers, json=data)
+        response = requests.post(self.api_url + "/user/profile/printer", headers=self.headers, json=data)
 
         # Check for a successful response
         if response.status_code == 200:
@@ -33,7 +33,7 @@ class PrinterAPI:
             return {"success": False, "message": response.json().get("message", "Failed to add printer")}
 
     def get_printers(self):
-        response = requests.get(self.api_url + "/printers", headers=self.headers)
+        response = requests.get(self.api_url + "/user/profile/printers", headers=self.headers)
 
         if response.status_code == 200:
             return {"success": True, "data": response.json()}

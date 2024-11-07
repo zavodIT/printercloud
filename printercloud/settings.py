@@ -160,4 +160,12 @@ SOCIAL_AUTH_AUTH0_DOMAIN = AUTH0_DOMAIN
 SOCIAL_AUTH_AUTH0_KEY = AUTH0_CLIENT_ID
 SOCIAL_AUTH_AUTH0_SECRET = AUTH0_CLIENT_SECRET
 
-AUTH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+MOCK_API = True
+
+if MOCK_API:
+    BASE_API_URL = "https://default-blackbird-aleksandrs-organization-c5c42-0.blackbird-relay.a8r.io/printercloud-api"
+    EPSON_API_URL = "https://default-blackbird-aleksandrs-organization-c5c42-0.blackbird-relay.a8r.io/epson-connect-printing-api"
+    AUTH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+
+else:
+    pass
