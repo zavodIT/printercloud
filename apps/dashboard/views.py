@@ -73,53 +73,36 @@ def start_print(request):
     # Initialize PrinterAPI and get printers
     auth_token = settings.AUTH_TOKEN
     api_url = "https://default-blackbird-aleksandrs-organization-c5c42-0.blackbird-relay.a8r.io/auth0-google-api/user/profile"
-
-    printer_api = PrinterAPI(api_url, auth_token)  # Assuming PrinterAPI is for getting printer list
-
+    printer_api = PrinterAPI(api_url, auth_token)
     response = printer_api.get_printers()
-
-    # Prepare printer data
     user_printers = response["data"] if response["success"] else []
 
     if request.method == "POST":
-        api_url = "https://default-blackbird-aleksandrs-organization-c5c42-0.blackbird-relay.a8r.io/epson-connect-printing-api"
-        epson_api = PrinterAPI(api_url, auth_token)  # Epson API for uploading files
+        # Epson Connect API URL for uploading files
+        epson_api_url = "https://default-blackbird-aleksandrs-organization-c5c42-0.blackbird-relay.a8r.io/epson-connect-printing-api"
+        epson_api = PrinterAPI(epson_api_url, auth_token)
+
         # Get uploaded file and selected printer
         document = request.FILES.get("document")
         selected_printer_id = request.POST.get("printer")
+        job_id = "111222333"  # For demonstration, should be unique per job
 
-        # Generate a unique job ID (or retrieve it from somewhere if needed)
-        job_id = "111222333"  # For demonstration, this should ideally be unique for each job
-
-        # Ensure all required data is available
         if document and selected_printer_id:
-            # Save the uploaded file to a temporary location if necessary, or pass directly
-            file_path = document.temporary_file_path() if hasattr(document, 'temporary_file_path') else document
+            # Directly use the document for upload
+            upload_response = epson_api.upload_print_job_file(selected_printer_id, job_id, document)
 
-            # Call the upload method to send the file to Epson Connect API
-            upload_response = epson_api.upload_print_job_file(selected_printer_id, job_id, file_path)
-
-            # Check if upload was successful and pass message to template
+            # Check upload status
             if upload_response and "job_status" in upload_response and upload_response["job_status"] == "CREATED":
                 success_message = f"Print job created successfully. Job ID: {upload_response['job_id']}"
-                return render(request, 'dashboard/start_print.html', {
-                    'user_printers': user_printers,
-                    'success_message': success_message
-                })
+                context = {'user_printers': user_printers, 'success_message': success_message}
             else:
                 error_message = upload_response.get("message", "Failed to create print job.")
-                return render(request, 'dashboard/start_print.html', {
-                    'user_printers': user_printers,
-                    'error_message': error_message
-                })
+                context = {'user_printers': user_printers, 'error_message': error_message}
+            return render(request, 'dashboard/start_print.html', context)
+
         else:
             error_message = "Please select a printer and upload a document."
-            return render(request, 'dashboard/start_print.html', {
-                'user_printers': user_printers,
-                'error_message': error_message
-            })
+            context = {'user_printers': user_printers, 'error_message': error_message}
+            return render(request, 'dashboard/start_print.html', context)
 
-    # Render the start print page with printers for GET requests
-    return render(request, 'dashboard/start_print.html', {
-        'user_printers': user_printers
-    })
+    return render(request, 'dashboard/start_print.html', {'user_printers': user_printers})

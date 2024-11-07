@@ -1,4 +1,7 @@
 import requests
+import tempfile
+import subprocess
+import json
 
 class PrinterAPI:
     def __init__(self, api_url, auth_token):
@@ -48,14 +51,32 @@ class PrinterAPI:
         """
         url = f"{self.api_url}/printing/printers/{printer_id}/jobs/{job_id}/upload"
 
-        # Prepare files data with the uploaded document directly
-        files = {'file': (document.name, document, 'multipart/form-data')}
+        with tempfile.NamedTemporaryFile(delete=False) as temp_file:
+            temp_file.write(document.read())
+            temp_file_path = temp_file.name
 
-        # Make the POST request
-        response = requests.post(url, headers=self.headers, files=files)
+        # Construct the curl command to upload the file
+        command = [
+            "curl", "--request", "POST",
+            "--url", url,
+            "--header", "Accept: application/json",
+            "--header", f"Authorization: Bearer {self.auth_token}",
+            "--form", f"file=@{temp_file_path}"
+        ]
 
-        # Check response status
-        if response.status_code == 200:
-            return response.json()
+        # Execute the curl command and capture the output
+        result = subprocess.run(command, capture_output=True, text=True)
+
+        # Output debugging information
+        print("Curl Command Output:", result.stdout)
+        print("Curl Command Error:", result.stderr)
+
+        # Parse and return the JSON response if successful
+        if result.returncode == 0:
+            try:
+                response_json = json.loads(result.stdout)
+                return response_json
+            except json.JSONDecodeError:
+                return {"error": "Invalid JSON response from server", "details": result.stdout}
         else:
-            return {"error": response.status_code, "message": response.text}
+            return {"error": "Curl command failed", "details": result.stderr}
