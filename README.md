@@ -49,8 +49,6 @@ authentication via Auth0.
    
 ## Configuration
 
-	1.	Environment Variables
-
     DJANGO_SECRET_KEY=<your_django_secret_key>
     AUTH_TOKEN=<your_auth_token>
     BASE_API_URL=https://default-blackbird-aleksandrs-organization-c5c42-0.blackbird-relay.a8r.io/printercloud-api
@@ -58,10 +56,11 @@ authentication via Auth0.
     AUTH0_CLIENT_SECRET=<your_auth0_client_secret>
     AUTH0_DOMAIN=<your_auth0_domain>
 
-## Usage
-    ```bash
-    python manage.py runserver
 
+## Usage
+
+    python manage.py runserver
+    
 ## API Integration
 PrinterCloud integrates with third-party APIs for enhanced printer management and tracking:
 
