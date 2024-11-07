@@ -128,6 +128,14 @@ STATICFILES_DIRS = (
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+# For development, set this to False; in production, it should be True if using HTTPS
+SESSION_COOKIE_SECURE = False
+
+# Optionally, you can enable this to delete the session when the browser closes
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 import os
@@ -151,3 +159,5 @@ LOGOUT_REDIRECT_URL = "/"
 SOCIAL_AUTH_AUTH0_DOMAIN = AUTH0_DOMAIN
 SOCIAL_AUTH_AUTH0_KEY = AUTH0_CLIENT_ID
 SOCIAL_AUTH_AUTH0_SECRET = AUTH0_CLIENT_SECRET
+
+PRINTER_AUTH_TOKEN = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'

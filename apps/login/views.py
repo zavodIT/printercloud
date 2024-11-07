@@ -36,9 +36,10 @@ def get_auth0_jwks():
     jwks = requests.get(jwks_url).json()
     return jwks
 
+
 def callback(request):
     code = request.GET.get('code')
-    next_url = request.GET.get('state', '/')  # Default to index page if no next URL is provided
+    next_url = request.GET.get('state', '/')
     token_url = f"https://{settings.AUTH0_DOMAIN}/oauth/token"
     token_payload = {
         'client_id': settings.AUTH0_CLIENT_ID,
@@ -51,21 +52,39 @@ def callback(request):
     id_token = token_info.get("id_token")
 
     try:
-        # Decode the token and store user information in the session
-        payload = jwt.decode(
-            id_token,
-            settings.AUTH0_CLIENT_SECRET,
-            algorithms=['HS256'],
-            audience=settings.AUTH0_CLIENT_ID
-        )
-        request.session['user'] = {
-            'id': payload['sub'],
-            'name': payload['name'],
-            'email': payload['email'],
-            'picture': payload.get('picture', '')
-        }
-        # Redirect to the original page the user intended to visit
-        return redirect(next_url)
+        jwks = get_auth0_jwks()
+        unverified_header = jwt.get_unverified_header(id_token)
+        rsa_key = {}
+        for key in jwks["keys"]:
+            if key["kid"] == unverified_header["kid"]:
+                rsa_key = {
+                    "kty": key["kty"],
+                    "kid": key["kid"],
+                    "use": key["use"],
+                    "n": key["n"],
+                    "e": key["e"]
+                }
+
+        if rsa_key:
+            payload = jwt.decode(
+                id_token,
+                rsa_key,
+                algorithms=["RS256"],
+                audience=settings.AUTH0_CLIENT_ID,
+                issuer=f"https://{settings.AUTH0_DOMAIN}/"
+            )
+            # Check if payload contains expected data
+            print("Decoded payload:", payload)
+
+            # Store user information in the session
+            request.session['user'] = {
+                'id': payload['sub'],
+                'name': payload['name'],
+                'email': payload['email'],
+                'picture': payload.get('picture', '')
+            }
+            print("User session set:", request.session['user'])
+            return redirect(next_url)
     except jwt.JWTError as e:
         print(f"JWT decoding error: {e}")
         return redirect('/login')

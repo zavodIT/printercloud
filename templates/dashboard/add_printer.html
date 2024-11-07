@@ -3,18 +3,38 @@
 {% block content %}
 <div class="container my-5">
     <h2 class="mb-4">Add a New Printer</h2>
+
+    <!-- Display Success Message -->
+    {% if success_message %}
+        <div class="alert alert-success">
+            {{ success_message }}
+        </div>
+    {% endif %}
+
+    <!-- Display Error Message -->
+    {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
     <form method="post">
         {% csrf_token %}
         <div class="mb-3">
-            <label for="printerName" class="form-label">Printer Name</label>
-            <input type="text" class="form-control" id="printerName" name="printer_name" required>
+            <label for="printer_id" class="form-label">Printer ID</label>
+            <input type="text" class="form-control" id="printer_id" name="printer_id" required>
         </div>
         <div class="mb-3">
-            <label for="printerStatus" class="form-label">Status</label>
-            <select class="form-control" id="printerStatus" name="printer_status" required>
-                <option value="Online">Online</option>
-                <option value="Offline">Offline</option>
-            </select>
+            <label for="printer_name" class="form-label">Printer Name</label>
+            <input type="text" class="form-control" id="printer_name" name="printer_name" required>
+        </div>
+        <div class="mb-3">
+            <label for="printer_type" class="form-label">Printer Type</label>
+            <input type="text" class="form-control" id="printer_type" name="printer_type" required>
+        </div>
+        <div class="mb-3">
+            <label for="printer_location" class="form-label">Printer Location</label>
+            <input type="text" class="form-control" id="printer_location" name="printer_location" required>
         </div>
         <button type="submit" class="btn btn-primary">Add Printer</button>
     </form>
