@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">Add a New Printer</h2>
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="printerName" class="form-label">Printer Name</label>
+            <input type="text" class="form-control" id="printerName" name="printer_name" required>
+        </div>
+        <div class="mb-3">
+            <label for="printerStatus" class="form-label">Status</label>
+            <select class="form-control" id="printerStatus" name="printer_status" required>
+                <option value="Online">Online</option>
+                <option value="Offline">Offline</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Printer</button>
+    </form>
+</div>
+{% endblock %}

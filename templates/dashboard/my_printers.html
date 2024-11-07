@@ -2,7 +2,12 @@
 
 {% block content %}
 <div class="container my-5">
-    <h2 class="mb-4">My Printers</h2>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">My Printers</h2>
+        <!-- Add Printer Button -->
+        <a href="{% url 'add_printer' %}" class="btn btn-primary">Add Printer</a>
+    </div>
+
     {% if user_printers %}
         <div class="row">
             {% for printer in user_printers %}
