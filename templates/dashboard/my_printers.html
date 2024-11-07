@@ -8,14 +8,23 @@
         <a href="{% url 'add_printer' %}" class="btn btn-primary">Add Printer</a>
     </div>
 
+    <!-- Display Error Message -->
+    {% if error_message %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+    {% endif %}
+
+    <!-- Display Printers -->
     {% if user_printers %}
         <div class="row">
             {% for printer in user_printers %}
                 <div class="col-md-4">
                     <div class="card mb-4">
                         <div class="card-body text-center">
-                            <h5 class="card-title">{{ printer.name }}</h5>
-                            <p class="card-text">Status: {{ printer.status }}</p>
+                            <h5 class="card-title">{{ printer.printer.printerName }}</h5>
+                            <p class="card-text">Type: {{ printer.printer.printerType }}</p>
+                            <p class="card-text">Location: {{ printer.printer.printerLocation }}</p>
                         </div>
                     </div>
                 </div>

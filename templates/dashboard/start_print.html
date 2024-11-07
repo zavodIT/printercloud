@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">Start Print</h2>
+
+    <!-- Display Success and Error Messages -->
+    {% if success_message %}
+        <div class="alert alert-success">{{ success_message }}</div>
+    {% endif %}
+    {% if error_message %}
+        <div class="alert alert-danger">{{ error_message }}</div>
+    {% endif %}
+
+    <!-- Start Print Form -->
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+
+        <!-- Document Upload Field -->
+        <div class="mb-3">
+            <label for="document" class="form-label">Upload Document</label>
+            <input type="file" class="form-control" id="document" name="document" accept=".pdf,.doc,.docx" required>
+            <small class="form-text text-muted">Supported formats: PDF, DOC, DOCX</small>
+        </div>
+
+        <!-- Printer Selection Dropdown -->
+        <div class="mb-3">
+            <label for="printer" class="form-label">Select Printer</label>
+            <select class="form-select" id="printer" name="printer" required>
+                <option value="" disabled selected>Select a printer</option>
+                {% if user_printers %}
+                    {% for entry in user_printers %}
+                        <option value="{{ entry.printer.printerId }}">
+                            {{ entry.printer.printerName }} - {{ entry.printer.printerLocation }}
+                        </option>
+                    {% endfor %}
+                {% else %}
+                    <option disabled>No printers available</option>
+                {% endif %}
+            </select>
+            <small class="form-text text-muted">Choose a printer from the list</small>
+        </div>
+
+        <!-- Start Print Button -->
+        <button type="submit" class="btn btn-primary">Start Print</button>
+    </form>
+</div>
+{% endblock %}
