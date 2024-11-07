@@ -116,20 +116,22 @@ def printer_details(request, printer_id):
     auth_token = settings.AUTH_TOKEN
     printer_api = PrinterAPI(api_url, auth_token)
 
-    # Mock printer information
-    printer = {
-        "printerName": "Office Printer",
-        "printerType": "Laser",
-        "printerLocation": "Room 101",
-        "status": "Online",
-        "printsThisMonth": 120
-    }
-
-    # Fetch printed documents for the specified printer
     printed_documents = printer_api.get_printed_documents(printer_id, profile_id="11222")
+
+
+    # Fetch printer details for the specified printer ID
+    response = printer_api.get_printer_details(printer_id)
+
+    if "printer" in response:
+
+        printer = response["printer"]
+    else:
+        printer = None
+        error_message = response.get("message", "Failed to retrieve printer details.")
 
     context = {
         'printer': printer,
-        'printed_documents': printed_documents
+        'printed_documents': printed_documents,
+        'error_message': error_message if not printer else None
     }
     return render(request, 'dashboard/printer_details.html', context)

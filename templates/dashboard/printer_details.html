@@ -4,16 +4,22 @@
 <div class="container my-5">
     <h2 class="mb-4">Printer Details</h2>
 
-    <!-- Printer Information -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">{{ printer.printerName }}</h5>
-            <p class="card-text"><strong>Type:</strong> {{ printer.printerType }}</p>
-            <p class="card-text"><strong>Location:</strong> {{ printer.printerLocation }}</p>
-            <p class="card-text"><strong>Status:</strong> {{ printer.status }}</p>
-            <p class="card-text"><strong>Total Prints This Month:</strong> {{ printer.printsThisMonth }}</p>
+    {% if printer %}
+        <!-- Printer Information -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">{{ printer.printerName }}</h5>
+                <p class="card-text"><strong>Type:</strong> {{ printer.printerType }}</p>
+                <p class="card-text"><strong>Location:</strong> {{ printer.printerLocation }}</p>
+                <p class="card-text"><strong>Status:</strong> {{ printer.status }}</p>
+                <p class="card-text"><strong>Total Prints This Month:</strong> {{ printer.totalPrintsThisMonth }}</p>
+            </div>
         </div>
-    </div>
+    {% else %}
+        <div class="alert alert-danger">
+            {{ error_message }}
+        </div>
+    {% endif %}
 
     <!-- List of Printed Documents with Profile Information -->
     <h4 class="mb-3">Documents Printed on This Printer</h4>
