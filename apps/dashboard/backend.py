@@ -118,3 +118,25 @@ class PrinterAPI:
             return response.json()
         else:
             return {"error": response.status_code, "message": response.text}
+
+    def get_user_profiles(self):
+        """
+        Retrieves the list of user profiles.
+
+        :return: JSON response containing the list of user profiles or an error message.
+        """
+        url = f"{self.api_url}/user/profiles"
+
+        response = requests.get(url, headers=self.headers)
+
+        if response.status_code == 200:
+            try:
+                return {"success": True, "data": response.json()}
+            except requests.exceptions.JSONDecodeError:
+                return {"success": False, "message": "Invalid JSON response from server"}
+        else:
+            return {
+                "success": False,
+                "message": f"Failed to retrieve user profiles. Status Code: {response.status_code}",
+                "details": response.text
+            }

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">User Profiles</h2>
+
+    {% if error_message %}
+        <div class="alert alert-danger">{{ error_message }}</div>
+    {% else %}
+        <div class="row">
+            {% for profile in user_profiles %}
+                <div class="col-md-4">
+                    <div class="card mb-4">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">{{ profile.name }}</h5>
+                            <p class="card-text"><strong>Email:</strong> {{ profile.email }}</p>
+                            <p class="card-text"><strong>Nickname:</strong> {{ profile.customProfileData.nickname }}</p>
+                            <p class="card-text"><strong>Locale:</strong> {{ profile.customProfileData.locale }}</p>
+                            <p class="card-text"><strong>Printed This Month:</strong> {{ profile.printedCountThisMonth }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

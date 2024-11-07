@@ -89,3 +89,25 @@ def printer_details(request, printer_id):
         'error_message': error_message
     }
     return render(request, 'dashboard/printer_details.html', context)
+
+def user_profiles(request):
+    # Initialize PrinterAPI with base URL and auth token from settings
+    printer_api = PrinterAPI(settings.BASE_API_URL, settings.AUTH_TOKEN)
+
+    # Call the get_user_profiles method
+    response = printer_api.get_user_profiles()
+
+    # Handle response based on success
+    if response["success"]:
+        user_profiles = response["data"]
+        error_message = None
+    else:
+        user_profiles = []
+        error_message = response["message"]
+
+    context = {
+        'user_profiles': user_profiles,
+        'error_message': error_message
+    }
+
+    return render(request, 'dashboard/user_profiles.html', context)
