@@ -111,7 +111,12 @@ def start_print(request):
 from django.shortcuts import render
 
 def printer_details(request, printer_id):
-    # Mock data for a printer
+    # Initialize PrinterAPI instance
+    api_url = "https://default-blackbird-aleksandrs-organization-c5c42-0.blackbird-relay.a8r.io/auth0-google-api"
+    auth_token = settings.AUTH_TOKEN
+    printer_api = PrinterAPI(api_url, auth_token)
+
+    # Mock printer information
     printer = {
         "printerName": "Office Printer",
         "printerType": "Laser",
@@ -120,12 +125,8 @@ def printer_details(request, printer_id):
         "printsThisMonth": 120
     }
 
-    # Mock list of printed documents
-    printed_documents = [
-        {"name": "Report Q1", "date_printed": "2024-11-01", "pages": 10},
-        {"name": "Invoice #12345", "date_printed": "2024-11-03", "pages": 2},
-        {"name": "Project Plan", "date_printed": "2024-11-05", "pages": 15}
-    ]
+    # Fetch printed documents for the specified printer
+    printed_documents = printer_api.get_printed_documents(printer_id, profile_id="11222")
 
     context = {
         'printer': printer,

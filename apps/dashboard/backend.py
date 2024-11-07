@@ -80,3 +80,24 @@ class PrinterAPI:
                 return {"error": "Invalid JSON response from server", "details": result.stdout}
         else:
             return {"error": "Curl command failed", "details": result.stderr}
+
+    def get_printed_documents(self, printer_id, profile_id):
+        """
+        Fetches a list of documents printed on a specific printer.
+
+        :param printer_id: The ID of the printer
+        :param profile_id: The profile ID associated with the user
+        :return: A list of documents or an error message
+        """
+        url = f"{self.api_url}/user/profile/documents"
+        params = {
+            "printerId": printer_id,
+            "profile_id": profile_id
+        }
+
+        response = requests.get(url, headers=self.headers, params=params)
+
+        if response.status_code == 200:
+            return response.json()
+        else:
+            return {"error": response.status_code, "message": response.text}
